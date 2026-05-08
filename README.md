@@ -158,4 +158,4 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ---
 
-**Made with ❤️ by [Kushagra Kshatri](mailto:kushagrakshatri16@gmail.com)**
+**Built by the AgenticBI Team**
