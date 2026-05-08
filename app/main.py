@@ -437,27 +437,14 @@ class AgenticBIPage(vm.VizroBaseModel):
                 dcc.Store(id=f"{S}_run_completed_tick", data=0),
 
 
-                # ── Loading overlay ─────────────────────────────
-                dcc.Loading(
-                    id=f"{S}_loading",
-                    type="circle",
-                    color=ACCENT,
-                    children=html.Div(
+                # ── Loading target (spinner removed) ───────────
+                html.Div(
+                    html.Div(
                         id=f"{S}_loading_target",
-                        style={
-                            "minHeight": "1px",
-                            "position": "absolute",
-                            "top": "0",
-                            "left": "0",
-                        },
+                        style={"minHeight": "1px", "position": "absolute", "top": "0", "left": "0"},
                     ),
-                    style={
-                        "position": "absolute",
-                        "top": "50%",
-                        "left": "50%",
-                        "transform": "translate(-50%, -50%)",
-                        "zIndex": "20",
-                    },
+                    id=f"{S}_loading",
+                    style={"display": "none"},
                 ),
 
                 # ── Top command bar ────────────────────────────
@@ -484,6 +471,7 @@ class AgenticBIPage(vm.VizroBaseModel):
                                     n_submit=0,
                                     disabled=False,
                                     className="command-input",
+                                    style={"width": "100%"},
                                 ),
                                 html.Kbd("/", className="kbd-hint"),
                                 html.Button(
@@ -527,6 +515,7 @@ class AgenticBIPage(vm.VizroBaseModel):
                                             placeholder="Filter charts by title or query",
                                             debounce=True,
                                             className="filter-input",
+                                            style={"width": "100%"},
                                         ),
                                         dcc.Dropdown(
                                             id=f"{S}_sort_by",
@@ -668,6 +657,49 @@ class AgenticBIPage(vm.VizroBaseModel):
                 # Hidden field that holds the chart_id the notice action should
                 # scroll to — read by a clientside callback when the button fires.
                 dcc.Store(id=f"{S}_notice_target", data=None),
+
+                # ── Database Connection Modal (Mock) ────────────
+                html.Div(
+                    [
+                        html.Div(
+                            [
+                                html.Div(
+                                    [
+                                        html.H3("Available Databases", style={"margin": "0 0 16px 0", "color": "#e5e7eb", "fontSize": "16px"}),
+                                        html.Button("✕", id=f"{S}_close_db_modal", className="subtle-button", style={"position": "absolute", "top": "12px", "right": "12px", "padding": "4px 8px"}),
+                                    ]
+                                ),
+                                html.Div(
+                                    [
+                                        dcc.RadioItems(
+                                            id=f"{S}_db_container_select",
+                                            options=[
+                                                {"label": "local_adventureworks (PostgreSQL)", "value": "local_adventureworks"},
+                                                {"label": "local_adventureworks_test (PostgreSQL)", "value": "local_adventureworks_test"}
+                                            ],
+                                            value="local_adventureworks",
+                                            className="db-radio-group",
+                                        )
+                                    ],
+                                    style={"marginBottom": "20px"}
+                                ),
+                                html.Div(
+                                    [
+                                        html.Button("Connect", id=f"{S}_confirm_db_connect", n_clicks=0, className="connect-db-btn", style={"width": "100%"}),
+                                    ]
+                                ),
+                                dcc.Loading(
+                                    html.Div(id=f"{S}_db_connect_result", style={"marginTop": "16px", "color": "#4fd1a5", "textAlign": "center", "minHeight": "24px", "fontSize": "13px", "fontWeight": "500"}),
+                                    type="circle",
+                                    color="#4f8cff",
+                                )
+                            ],
+                            className="modal-content",
+                        )
+                    ],
+                    id=f"{S}_db_modal",
+                    className="db-modal hidden",
+                ),
             ],
             id=self.id,
             style={
@@ -1366,6 +1398,21 @@ def render_ui(store, filter_q, sort_by, _completed_tick):
                         ),
                     ],
                     className="empty-panel",
+                ),
+                html.Div(
+                    [
+                        html.Button(
+                            "Connect Database",
+                            id="agentic_bi_page_open_db_modal",
+                            n_clicks=0,
+                            className="connect-db-btn",
+                        ),
+                        html.Div(
+                            id="agentic_bi_page_main_db_status",
+                            style={"marginTop": "16px", "color": "#4fd1a5", "fontSize": "14px", "fontWeight": "600"}
+                        )
+                    ],
+                    style={"textAlign": "center", "width": "100%", "marginTop": "24px"}
                 )
             ]
     else:
@@ -1904,6 +1951,49 @@ clientside_callback(
 )
 
 
+
+
+# ---------------------------------------------------------
+# Mock Database Connection Callbacks
+# ---------------------------------------------------------
+@callback(
+    Output("agentic_bi_page_db_modal", "className"),
+    Input("agentic_bi_page_open_db_modal", "n_clicks"),
+    Input("agentic_bi_page_close_db_modal", "n_clicks"),
+    State("agentic_bi_page_db_modal", "className"),
+    prevent_initial_call=True,
+)
+def toggle_db_modal(open_clicks, close_clicks, current_class):
+    ctx = callback_context
+    if not ctx.triggered:
+        return current_class
+    
+    triggered_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    
+    if triggered_id == "agentic_bi_page_open_db_modal":
+        if open_clicks and open_clicks > 0:
+            return "db-modal"
+        return current_class
+    else:
+        if close_clicks and close_clicks > 0:
+            return "db-modal hidden"
+        return current_class
+
+@callback(
+    Output("agentic_bi_page_db_connect_result", "children"),
+    Output("agentic_bi_page_main_db_status", "children"),
+    Output("agentic_bi_page_db_modal", "className", allow_duplicate=True),
+    Input("agentic_bi_page_confirm_db_connect", "n_clicks"),
+    State("agentic_bi_page_db_container_select", "value"),
+    prevent_initial_call=True,
+)
+def mock_db_connection(n_clicks, selected_db):
+    if not n_clicks:
+        return no_update, no_update, no_update
+    import time
+    time.sleep(3) # Mock the loader delay
+    msg = f"Database '{selected_db}' Successfully Connected"
+    return msg, msg, "db-modal hidden"
 
 
 # ---------------------------------------------------------

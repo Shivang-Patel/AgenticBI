@@ -45,6 +45,35 @@ input {
     font-family: inherit;
 }
 
+/* Dash wraps every dcc.Input in a .dash-input-container div. The inner
+   <input> has class .dash-input-element, display: inline-block, and defaults
+   to HTML size=20 (~173px). Scope overrides per context. */
+
+/* Command bar input — stretch to fill */
+.command-box .dash-input-container,
+.command-box .dash-input {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+.command-box input.dash-input-element {
+    width: 100% !important;
+    display: block !important;
+    box-sizing: border-box !important;
+}
+
+/* Filter input — constrained width, align with header row */
+.panel-header .filter-input.dash-input-container,
+.panel-header .filter-input.dash-input {
+    width: 220px !important;
+    max-width: 220px !important;
+    flex-shrink: 0;
+}
+.panel-header .filter-input input.dash-input-element {
+    width: 100% !important;
+    display: block !important;
+    box-sizing: border-box !important;
+}
+
 .main-layout {
     display: flex;
     flex-direction: row;
@@ -156,22 +185,42 @@ input {
 
 .command-input {
     min-width: 0;
+    width: 100%;
     height: 44px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #eef2f7;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+/* Dash wraps dcc.Input in a .dash-input-container div — the actual <input>
+   lives inside as .dash-input-element and needs to fill the wrapper. */
+.command-input .dash-input-element {
+    width: 100% !important;
+    height: 100%;
     padding: 0 14px;
     border: 0;
     outline: none;
     background: transparent;
     color: #eef2f7;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
 .command-input::placeholder,
+.command-input .dash-input-element::placeholder,
 .filter-input::placeholder {
     color: #687484;
 }
 
-.command-input:focus {
+.command-input:focus-within {
     box-shadow: inset 0 -1px 0 #4f8cff;
+}
+
+.command-input .dash-input-element:focus {
+    outline: none;
 }
 
 .command-button {
@@ -1483,4 +1532,107 @@ button[id*="suggested-query"]:hover {
     .chart-drawers {
         grid-template-columns: 1fr;
     }
+}
+
+/* Database Connection Modal */
+.db-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+    opacity: 1;
+    transition: opacity 0.2s;
+}
+
+.db-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.db-modal .modal-content {
+    background: #15181d;
+    border: 1px solid #2a313a;
+    border-radius: 12px;
+    padding: 24px;
+    width: 400px;
+    max-width: 90%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Connect Database Button - Primary Action */
+.connect-db-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 32px;
+    border: 1px solid rgba(79, 140, 255, 0.5);
+    border-radius: 24px;
+    background: linear-gradient(180deg, #3d7eff 0%, #2968eb 100%);
+    box-shadow: 0 4px 14px rgba(41, 104, 235, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.connect-db-btn:hover {
+    background: linear-gradient(180deg, #4f8cff 0%, #3d7eff 100%);
+    box-shadow: 0 6px 20px rgba(41, 104, 235, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.connect-db-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(41, 104, 235, 0.3);
+}
+
+/* Custom styling for the database list radio buttons */
+.db-radio-group label {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    background: #1a2028;
+    border: 1px solid #303946;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #e5e7eb;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+}
+
+.db-radio-group label:hover {
+    border-color: #4f8cff;
+    background: #1e2630;
+}
+
+/* Hide default radio completely */
+.db-radio-group input[type="radio"] {
+    display: none;
+}
+
+/* Highlight the whole row when selected with a cool effect */
+.db-radio-group label:has(input[type="radio"]:checked) {
+    border-color: #4f8cff;
+    background: rgba(79, 140, 255, 0.12);
+    box-shadow: 0 4px 14px rgba(79, 140, 255, 0.15), inset 0 0 0 1px #4f8cff;
+    color: #ffffff;
+}
+
+/* Add a subtle check icon to the selected row using pseudo-elements */
+.db-radio-group label:has(input[type="radio"]:checked)::after {
+    content: '✓';
+    margin-left: auto;
+    color: #4f8cff;
+    font-size: 16px;
+    font-weight: bold;
 }
