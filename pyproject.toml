@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agenticbi"
+version = "0.1.0"
+description = "AI-powered Business Intelligence dashboard with natural language queries"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Kushagra Kshatri", email = "kushagrakshatri16@gmail.com"}
+]
+keywords = ["bi", "dashboard", "vizro", "plotly", "langchain", "ai", "sql"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "langchain-core",
+    "langchain-ollama",
+    "langchain-openai",
+    "langchain-huggingface",
+    "langchain-chroma",
+    "langgraph",
+    "psycopg2-binary",
+    "pandas",
+    "tabulate",
+    "chromadb",
+    "sentence-transformers>=2.2.0,<3.0.0",
+    "networkx",
+    "vizro",
+    "plotly",
+    "pydantic",
+    "pypdf",
+    "python-dotenv",
+    "mcp",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+    "mypy",
+    "isort",
+]
+
+[project.urls]
+Homepage = "https://github.com/Shivang-Patel/AgenticBI"
+Repository = "https://github.com/Shivang-Patel/AgenticBI"
+Issues = "https://github.com/Shivang-Patel/AgenticBI/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*", "tests*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

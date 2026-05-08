@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgenticBI - UI Preview</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #1e1e1e;
+    color: #cccccc;
+    height: 100vh;
+    overflow: hidden;
+}
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* LEFT PANEL - Dashboard */
+.left-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #1e1e1e;
+    min-width: 0;
+}
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #3c3c3c;
+    flex-shrink: 0;
+}
+.panel-header span {
+    font-size: 11px;
+    color: #6a6a6a;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    margin-right: auto;
+}
+.panel-header input {
+    width: 150px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background: #3c3c3c;
+    color: #cccccc;
+    border: 1px solid #3c3c3c;
+    border-radius: 6px;
+    outline: none;
+}
+.panel-header select {
+    width: 130px;
+    font-size: 12px;
+    background: #3c3c3c;
+    color: #cccccc;
+    border: 1px solid #3c3c3c;
+    border-radius: 6px;
+    padding: 4px;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+.empty-state {
+    color: #6a6a6a;
+    font-size: 13px;
+    padding: 32px 8px;
+}
+.suggested-queries {
+    padding: 0 8px;
+}
+.suggested-queries h4 {
+    color: #6a6a6a;
+    font-size: 11px;
+    margin-bottom: 8px;
+    font-weight: normal;
+}
+.query-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.chip {
+    padding: 6px 12px;
+    font-size: 12px;
+    background: #3c3c3c;
+    color: #cccccc;
+    border: 1px solid #3c3c3c;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.chip:hover {
+    background: #4a4a4a;
+}
+
+/* Chart Card */
+.chart-card {
+    margin-bottom: 16px;
+    padding: 14px;
+    background: #252526;
+    border-radius: 6px;
+    border: 1px solid #3c3c3c;
+}
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.chart-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: #cccccc;
+}
+.chart-query {
+    font-size: 11px;
+    color: #6a6a6a;
+    margin-left: 10px;
+}
+.chart-actions {
+    display: flex;
+    gap: 4px;
+}
+.chart-actions button {
+    padding: 2px 6px;
+    font-size: 14px;
+    background: transparent;
+    color: #6a6a6a;
+    border: none;
+    cursor: pointer;
+}
+.chart-actions button:hover {
+    color: #ffffff;
+}
+.chart-placeholder {
+    height: 300px;
+    background: #1e1e1e;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6a6a6a;
+    font-size: 13px;
+}
+
+/* DIVIDER */
+.divider {
+    width: 1px;
+    background: #3c3c3c;
+    flex-shrink: 0;
+}
+
+/* RIGHT PANEL - Chat */
+.right-panel {
+    width: 38%;
+    min-width: 300px;
+    max-width: 500px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background: #252526;
+    height: 100%;
+}
+.chat-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid #3c3c3c;
+    flex-shrink: 0;
+}
+.chat-header span {
+    font-size: 11px;
+    color: #6a6a6a;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+}
+.clear-btn {
+    margin-left: auto;
+    padding: 4px 10px;
+    font-size: 11px;
+    background: transparent;
+    color: #6a6a6a;
+    border: 1px solid #3c3c3c;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Welcome Message */
+.welcome-msg {
+    padding: 8px 0;
+}
+.welcome-title {
+    color: #cccccc;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.welcome-text {
+    color: #6a6a6a;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+/* Chat Bubbles */
+.message {
+    display: flex;
+    justify-content: flex-start;
+}
+.message.user {
+    justify-content: flex-end;
+}
+.bubble {
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 88%;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+.bubble.user {
+    background: #2d4a7a;
+    color: #cccccc;
+}
+.bubble.assistant {
+    background: #2d2d2d;
+    color: #cccccc;
+}
+
+/* Input Bar */
+.input-bar {
+    display: flex;
+    padding: 10px 14px;
+    border-top: 1px solid #3c3c3c;
+    background: #252526;
+    flex-shrink: 0;
+}
+.input-bar input {
+    flex: 1;
+    padding: 9px 12px;
+    font-size: 13px;
+    background: #3c3c3c;
+    color: #cccccc;
+    border: 1px solid #3c3c3c;
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    outline: none;
+}
+.input-bar button {
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    background: #0e639c;
+    color: #ffffff;
+    border: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.input-bar button:disabled {
+    background: #6a6a6a;
+    cursor: not-allowed;
+}
+
+/* Loading Spinner */
+.loading-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+.loading-overlay.active {
+    display: block;
+}
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #3c3c3c;
+    border-top-color: #0e639c;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .right-panel {
+        width: 100%;
+        min-width: auto;
+        max-width: none;
+        height: 40%;
+        border-top: 1px solid #3c3c3c;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <div class="panel-header">
+            <span>CHARTS</span>
+            <input type="text" placeholder="Filter charts…">
+            <select>
+                <option>Latest first</option>
+                <option>A → Z</option>
+                <option>Z → A</option>
+            </select>
+        </div>
+        <div class="dashboard-content">
+            <!-- Empty State with Suggested Queries -->
+            <div class="empty-state">
+                Ask a question in the chat to generate charts.
+            </div>
+            <div class="suggested-queries">
+                <h4>Try asking:</h4>
+                <div class="query-chips">
+                    <button class="chip">Show total sales by region</button>
+                    <button class="chip">Top 10 products by revenue</button>
+                    <button class="chip">Sales trend over time</button>
+                    <button class="chip">Employee vacation hours</button>
+                    <button class="chip">Online vs in-store orders</button>
+                </div>
+            </div>
+
+            <!-- Example Chart Card -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <span class="chart-title">Sales by Region</span>
+                        <span class="chart-query">Show total sales by region</span>
+                    </div>
+                    <div class="chart-actions">
+                        <button title="Expand fullscreen">⛶</button>
+                        <button title="Download PNG">⬇</button>
+                        <button title="Remove">✕</button>
+                    </div>
+                </div>
+                <div class="chart-placeholder">
+                    [Plotly Chart: Bar Chart]
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="divider"></div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+        <div class="chat-header">
+            <span>CHAT</span>
+            <button class="clear-btn">Clear</button>
+        </div>
+        <div class="chat-messages">
+            <!-- Welcome Message -->
+            <div class="welcome-msg">
+                <div class="welcome-title">👋 Welcome to AgenticBI</div>
+                <div class="welcome-text">Ask anything about your data and I'll generate charts and insights.</div>
+                <div class="suggested-queries">
+                    <h4>Try asking:</h4>
+                    <div class="query-chips">
+                        <button class="chip">Show total sales by region</button>
+                        <button class="chip">Top 10 products by revenue</button>
+                        <button class="chip">Sales trend over time</button>
+                        <button class="chip">Employee vacation hours</button>
+                        <button class="chip">Online vs in-store orders</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example Messages -->
+            <div class="message user">
+                <div class="bubble user">Show total sales by region</div>
+            </div>
+            <div class="message">
+                <div class="bubble assistant">Chart ready: **Sales by Region**</div>
+            </div>
+        </div>
+        <div class="input-bar">
+            <input type="text" placeholder="Ask anything about your data…">
+            <button>Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+</div>
+
+<script>
+// Simulate loading state
+setTimeout(() => {
+    document.getElementById('loading').classList.add('active');
+    setTimeout(() => {
+        document.getElementById('loading').classList.remove('active');
+    }, 2000);
+}, 1000);
+</script>
+</body>
+</html>
